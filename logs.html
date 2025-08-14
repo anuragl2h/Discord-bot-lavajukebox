@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Logs - Discord Music Bot{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📋 Bot Logs</h2>
+    <p>Real-time bot activity and error logs (last 100 lines)</p>
+    <button class="btn" onclick="window.location.reload()">Refresh Logs</button>
+</div>
+
+<div class="card">
+    <div class="log-container" id="log-container">
+        {% if logs %}
+            {% for line in logs %}
+                {% if line.strip() %}
+                    <div>{{ line }}</div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <div>No logs available</div>
+        {% endif %}
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="/" class="btn">← Back to Dashboard</a>
+    <button class="btn" onclick="scrollToBottom()">Scroll to Bottom</button>
+    <button class="btn" onclick="toggleAutoScroll()">Toggle Auto-scroll</button>
+</div>
+
+<script>
+let autoScroll = true;
+
+function scrollToBottom() {
+    const container = document.getElementById('log-container');
+    container.scrollTop = container.scrollHeight;
+}
+
+function toggleAutoScroll() {
+    autoScroll = !autoScroll;
+    const button = event.target;
+    button.textContent = autoScroll ? 'Disable Auto-scroll' : 'Enable Auto-scroll';
+    button.style.background = autoScroll ? '#ed4245' : '#5865f2';
+}
+
+// Auto-refresh logs every 10 seconds
+setInterval(() => {
+    if (autoScroll) {
+        window.location.reload();
+    }
+}, 10000);
+
+// Scroll to bottom on load
+window.onload = () => {
+    scrollToBottom();
+};
+</script>
+
+<style>
+.log-container {
+    background: #1a1a1a;
+    color: #00ff41;
+    font-family: 'Courier New', Consolas, monospace;
+    padding: 20px;
+    border-radius: 10px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 2px solid #333;
+}
+
+.log-container div {
+    margin-bottom: 2px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Color coding for different log levels */
+.log-container div:contains("ERROR") {
+    color: #ff6b6b;
+}
+
+.log-container div:contains("WARNING") {
+    color: #ffd93d;
+}
+
+.log-container div:contains("INFO") {
+    color: #6bcf7f;
+}
+
+.log-container div:contains("DEBUG") {
+    color: #74c0fc;
+}
+
+/* Scrollbar styling */
+.log-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.log-container::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 4px;
+}
+
+.log-container::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.log-container::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Documentation - Discord Music Bot{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📚 Discord Music Bot Documentation</h2>
+    <p>Complete guide to using your Discord Music Bot</p>
+</div>
+
+<div class="card">
+    <h3>🎵 Music Commands</h3>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: rgba(88, 101, 242, 0.1);">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Command</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Description</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!play &lt;song&gt;</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Play a song or add to queue</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!play never gonna give you up</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!pause</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Pause current track</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!pause</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!resume</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Resume paused track</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!resume</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!skip</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Skip current track</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!skip</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!stop</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Stop music and clear queue</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!stop</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!queue</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">View current queue</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!queue</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!nowplaying</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Show current track info</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!nowplaying</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!volume &lt;0-100&gt;</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Adjust volume level</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!volume 75</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!disconnect</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Leave voice channel</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!disconnect</code></td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!status</code></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Check bot and server status</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><code>!status</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔧 Setup Instructions</h3>
+    <h4>1. Bot Token Setup</h4>
+    <p>Get your Discord bot token from the <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a></p>
+    <ol>
+        <li>Go to Discord Developer Portal</li>
+        <li>Create a new application</li>
+        <li>Go to "Bot" section</li>
+        <li>Create a bot and copy the token</li>
+        <li>Add the token to your <code>.env</code> file</li>
+    </ol>
+    
+    <h4>2. Bot Permissions</h4>
+    <p>Your bot needs these permissions in Discord servers:</p>
+    <ul>
+        <li>Send Messages</li>
+        <li>Connect (to voice channels)</li>
+        <li>Speak (in voice channels)</li>
+        <li>Use Voice Activity</li>
+    </ul>
+    
+    <h4>3. Invite Bot to Server</h4>
+    <p>Use this URL template (replace YOUR_CLIENT_ID):</p>
+    <code style="word-break: break-all; display: block; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+        https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=3148800&scope=bot
+    </code>
+</div>
+
+<div class="card">
+    <h3>🎯 Usage Tips</h3>
+    <ul>
+        <li><strong>Join Voice Channel:</strong> You must be in a voice channel to use music commands</li>
+        <li><strong>Song Search:</strong> Bot searches YouTube automatically - just use song names or paste URLs</li>
+        <li><strong>Queue Management:</strong> Songs are added to queue if music is already playing</li>
+        <li><strong>Auto Disconnect:</strong> Bot leaves after 30 seconds of inactivity</li>
+        <li><strong>Multiple Sources:</strong> Supports YouTube, SoundCloud, and direct audio links</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>⚙️ Web Interface Features</h3>
+    <ul>
+        <li><strong>Dashboard:</strong> Monitor bot status and server connections</li>
+        <li><strong>Real-time Stats:</strong> View active players and music nodes</li>
+        <li><strong>Server Management:</strong> Start/stop bot remotely</li>
+        <li><strong>Logs:</strong> View bot activity and troubleshoot issues</li>
+        <li><strong>Auto-refresh:</strong> Status updates every 5 seconds</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>🔍 Troubleshooting</h3>
+    <h4>Music Server Issues</h4>
+    <ul>
+        <li>Check the Dashboard for node connection status</li>
+        <li>If nodes show 0/1, the music server may be down temporarily</li>
+        <li>Try the <code>!status</code> command in Discord to verify</li>
+        <li>Public music servers can have occasional downtime</li>
+    </ul>
+    
+    <h4>Voice Connection Problems</h4>
+    <ul>
+        <li>Ensure you're in a voice channel before using music commands</li>
+        <li>Check bot has Connect and Speak permissions</li>
+        <li>Try <code>!disconnect</code> then <code>!play</code> again</li>
+        <li>Verify PyNaCl is installed for voice functionality</li>
+    </ul>
+    
+    <h4>Bot Not Responding</h4>
+    <ul>
+        <li>Check bot is online in Discord (green status)</li>
+        <li>Verify correct command prefix (default: <code>!</code>)</li>
+        <li>Ensure bot has "Send Messages" permission</li>
+        <li>Check the web dashboard for connection status</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>🌐 Environment Variables</h3>
+    <p>Configure these in your <code>.env</code> file:</p>
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 14px;">
+        <strong># Required</strong><br>
+        DISCORD_TOKEN=your_bot_token_here<br><br>
+        
+        <strong># Optional (with defaults)</strong><br>
+        COMMAND_PREFIX=!<br>
+        LAVALINK_HOST=lavalink.devxcode.in<br>
+        LAVALINK_PORT=80<br>
+        LAVALINK_PASSWORD=DevamOP<br>
+        MAX_QUEUE_SIZE=100<br>
+        DEFAULT_VOLUME=50<br>
+        LOG_LEVEL=INFO
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="/" class="btn">← Back to Dashboard</a>
+</div>
+{% endblock %}
