@@ -58,9 +58,7 @@ class MusicBot(commands.Bot):
         
     async def on_command_error(self, ctx, error):
         """Global error handler for commands."""
-        if isinstance(error, commands.CommandNotFound):
-            await ctx.send(f"❌ Command not found. Use `{Config.COMMAND_PREFIX}help` for available commands.")
-        elif isinstance(error, commands.MissingRequiredArgument):
+        if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f"❌ Missing required argument: {error.param}")
         elif isinstance(error, commands.BadArgument):
             await ctx.send(f"❌ Invalid argument provided.")
