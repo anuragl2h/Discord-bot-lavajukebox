@@ -4,7 +4,7 @@ import os  # needed to get PORT from environment
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret!"  # needed for socketio
-socketio = SocketIO(app)  # async_mode required for Vercel
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet") # async_mode required for Vercel
 
 @app.route("/")
 def index():
