@@ -1,6 +1,2 @@
-discord.py
-wavelink
 flask
-python-dotenv
-aiohttp
-pynacl
+flask-socketio
