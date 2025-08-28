@@ -357,7 +357,7 @@ let isAbusive = abusiveWords.some(word => msg.includes(word));
   function(){
     $.futureUImodal({
       title : "Setting change username",
-      content : `<input id="ni" class="fu-input" placeholder="New username" autofocus><button id="close" class="fu-btn">Close</button>`,
+      content : `<input id="ni" class="fu-input" placeholder="New username" autofocus><button id="close" class="fu-btn">submit</button>    <button id="moc" class="fu-btn">Close</button`,
       autoClose: false
     })
   }
@@ -369,6 +369,24 @@ let isAbusive = abusiveWords.some(word => msg.includes(word));
         localStorage.setItem("UserName",name);
     $.futureUItoast("Username succesfully changed")
     $('.fu-modal-close').click();
+  }
+  )
+  $(document).on("click","#moc",
+  function(){
+    $('.fu-modal-close').click();
+  }
+  )
+  $(document).on("click","#rule",
+  function(){
+    $.futureUImodal({
+      title: "rules",
+      content: `<div class="fu-toast"> <h3>🚫 No abusive language<br>
+  🚫 No personal info<br>
+  🚫 No links</h3></div>
+  <button id="moc" class="fu-btn">close</button>
+  `,
+      autoClose: 4500
+    })
   }
   )
 });
