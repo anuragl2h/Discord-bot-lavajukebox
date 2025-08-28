@@ -126,7 +126,7 @@
     }
     .submit1:focus{ outline: none; }
 .submit:hover{
-  background: #2F3560;
+  background:rgb(27,131,212) ;
 }
 .td {
   display: grid;
@@ -162,26 +162,31 @@
 
     
     .header{
-      background-color: black; border-radius: 5vh; height: 22vh; width: 22vh;
+      background-color: black;  height: max-content; width: max-content;
+      padding: 5px;
       position: fixed; top: 12.5vh; right: 1vh; opacity: 0; z-index: -1;
-      display: grid; place-items: center; transition: opacity .2s ease, transform .2s ease, z-index 0s linear .2s;
+      border: 1px solid purple;
+      display: grid; place-items: center; transition: opacity .2s ease, transform .2s ease, ;
       transform: translateY(-8px);
     }
     
     .header.open{
-      opacity: 1; z-index: 999; transform: translateY(0); transition: opacity .2s ease, transform 0.2s ease;
-      background: lightblue;
-  backdrop-filter: blur(2000px);
+      opacity: 1; z-index: 99; transform: translateY(0); transition: opacity .2s ease, transform 0.2s ease;
+      background: #333;
+  backdrop-filter: blur(200px);
+  border: 1px solid purple;
+  
   border-radius: 2vh;
   padding: 15px;
   color: white;
     }
-    ul{ list-style: none; margin: 0; padding: 0px;
+    ul{ list-style:none ;margin-left: 5px; padding: 0px;
     font-family: Poppins;
     font-weight: 500;
     }
     li, a{ font-size: 2.75vh;
-    
+    background: transparent;
+    border-bottom: 1px solid blue;
     color: white; text-decoration: none;
     }
     a:focus{ text-decoration: none; }
@@ -200,6 +205,10 @@
   font-size: 2.5vh;
   text-align: center;
 }
+#rule{
+  justify-self: start;
+  vertical-align: center;
+}
   </style>
 </head>
 <body>
@@ -209,9 +218,11 @@
       <li><a href="https://L2hport.is-a.dev">Portfolio</a></li>
       <li><a href="https://anuragl2h.github.io/L2h-anitrest/index.html">Anime Story</a></li>
       <li><a href="https://discord.gg/urRpFsdJ">join Discord</a></li>
-      
+      <li><a href="#" id="set">Setting️ ⚙️ </a></li>
+      <li><a id="rule">Rules</a></li>
     </ul>
   </div>
+
 
   <div class="main">
     <div class="div1">
@@ -235,11 +246,15 @@
   </div>
 <div id="fu-container">
   </div>
+</body>
 <script>
 $(function(){
   const socket = io();
-let name = null;
+let name = localStorage.getItem("UserName");
 
+if (name) {
+  console.log("Loaded name from localStorage:", name);
+} else {
       $('#message, #sendBtn').prop('disabled', true);
 
       $.futureUImodal({
@@ -255,6 +270,7 @@ let name = null;
           $('#message, #sendBtn').prop('disabled', false);
         }
       });
+}
 
       $(document).on('click', '#nameSubmit', function(){
         const val = $("#inp").val().trim();
@@ -262,8 +278,9 @@ let name = null;
           $.futureUItoast("Please enter a name!");
           return;
         }
-        name = val; // Store name before closing
-        console.log("Submit clicked, name set to:", name);
+        name = val || Anonymous ;
+        localStorage.setItem("UserName",name);
+        
         $('.fu-modal-close').click();
       });
 
@@ -286,11 +303,28 @@ let name = null;
   function sendMessage(){
     const msg = $("#message").val().trim();
     if(!msg) return;
+    const abusiveWords = [
+  "mc", "MC", "Mc", "mC",
+  "bc", "BC", "Bc", "bC",
+  "gandu", "GANDU", "Gandu",
+  "chutiya", "CHUTIYA", "Chutiya",
+  "madarchod", "MADARCHOD", "Madarchod",
+  "bhosdike", "BHOSDIKE", "Bhosdike",
+  "randi", "RANDI", "Randi",
+  "lund", "LUND", "Lund"
+];
+let isAbusive = abusiveWords.some(word => msg.includes(word));
+    if(isAbusive){
+    $.futureUItoast("No abusive word allowed")
+    msg = none
+    }
     socket.send(`${name }: ${msg}`);
     $("#message").val("").focus();
   }
+  
 
-  $("#sendBtn").on("click", sendMessage);
+
+  $(".submit").on("click", sendMessage);
   $("#message").on("keydown", function(e){
     if(e.key === "Enter"){
       e.preventDefault();
@@ -319,7 +353,24 @@ let name = null;
       $("#menuBtn").removeClass("ro");
     }
   });
+ $(document).on("click","#set",
+  function(){
+    $.futureUImodal({
+      title : "Setting change username",
+      content : `<input id="ni" class="fu-input" placeholder="New username" autofocus><button id="close" class="fu-btn">Close</button>`,
+      autoClose: false
+    })
+  }
+  )
+  $(document).on("click","#close",
+  function(){
+    val = $('#ni').val().trim()
+    name = val || Anonymous ;
+        localStorage.setItem("UserName",name);
+    $.futureUItoast("Username succesfully changed")
+    $('.fu-modal-close').click();
+  }
+  )
 });
 </script>
-</body>
 </html>
