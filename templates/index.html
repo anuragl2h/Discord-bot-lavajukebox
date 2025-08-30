@@ -430,15 +430,15 @@ $(document).on("click", "#usersButton", function() {
         $('.fu-modal-close').click();
       });
 
-      $(document).on("click", ".moc", function(){
+      $(document).on("click", ".buttonsesebtn", function(){
         $('.fu-modal-close').click();
       });
 
       $(document).on("click", "#rule", function(){
         $.futureUImodal({
           title: "rules",
-          content: `<div class="rules"><h3>🚫 No abusive language<br>🚫 No personal info<br>🚫 No links</h3></div><button id="moc" class="fu-btn">close</button>`,
-          autoClose: false
+          content: `<div class="rules"><h3>🚫 No abusive language<br>🚫 No personal info<br>🚫 No links</h3></div><button id="moc" class="fu-btn moc">close</button>`,
+          autoClose: close
         });
       });
     });
