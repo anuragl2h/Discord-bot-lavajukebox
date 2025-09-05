@@ -36,9 +36,16 @@ def index():
 # --- Return last 50 messages for history ---
 @app.route("/history")
 def history():
-    cursor.execute("SELECT username, message FROM messages ORDER BY id DESC LIMIT 50")
+    cursor.execute("SELECT id, username, message FROM messages ORDER BY id DESC LIMIT 50")
     rows = cursor.fetchall()
-    return jsonify({"history": [f"{r[0]}: {r[1]}" for r in rows]})
+    history_list = []
+    for row in reversed(rows):
+        history_list.append({
+            "id": row[0],
+            "username": row[1],
+            "message": row[2]
+        })
+    return jsonify({"history": history_list})
 
 # --- Socket.IO events ---
 @socketio.on("connect")
