@@ -131,17 +131,21 @@
         loadHistory(); // reload messages after username is set
       });
       // --- Load saved history from /history ---
-      function loadHistory() {
-    $.get("/history", function(data) {
-        messages.empty();
-        const history = data.history.reverse();
-        history.forEach(function(msg) {
-            const isSelf = msg.username === name;
-            // FIX: Pass the entire message object which now includes the ID
-            appendMessage(msg, isSelf, msg.id);
-        });
-    });
-    }
+      function loadHistory(){
+        fetch("/history")
+          .then(res => res.json())
+          .then(data => {
+            $("#messages").empty();
+            data.history.reverse().forEach(msg => {
+              const isMe = msg.startsWith(name + ": ");
+              const div = $("<div>").addClass("msg").text(msg);
+              if(isMe) div.addClass("me");
+              $("#messages").append(div);
+            });
+            $("#messages").scrollTop($("#messages")[0].scrollHeight);
+          });
+      }
+
       // Load history immediately if username exists
       if (name) loadHistory();
 
@@ -185,34 +189,7 @@
         $("#message").val("").focus();
       }
       // Listen for a double-click event on any message
-$(document).on("dblclick", ".message", function() {
-    // Get the unique ID from the data-id attribute
-    const messageId = $(this).data("id");
 
-    // Check if the message has an ID (history messages don't)
-    if (messageId) {
-        // Confirm with the user before deleting
-        if (confirm("Are you sure you want to delete this message?")) {
-            // Emit a "delete_message" event to the server
-            socket.emit("delete_message", messageId);
-        }
-    } else {
-        alert("Cannot delete a message from history.");
-    }
-});
-
-// Listen for a "message_deleted" event from the server
-socket.on("message_deleted", function(id) {
-    // Find the message by its data-id and remove it from the UI
-    $(`li[data-id="${id}"]`).remove();
-});
-function appendMessage(msg, isSelf, id) {
-    const liClass = isSelf ? "self" : "other";
-    // Use the id parameter to set the data-id attribute
-    const messageHtml = `<li class="message ${liClass}" data-id="${id}"><span class="username">${msg.username}:</span><span class="content">${msg.message}</span></li>`;
-    messages.append(messageHtml);
-    messages.scrollTop(messages.prop("scrollHeight"));
-}
 
 socket.on("message", function(msg) {
     const isSelf = msg.username === name;
