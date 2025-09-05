@@ -67,8 +67,18 @@ def handle_message(msg):
         (username, msg)
     )
     db.commit()
-
+    new_message_id = cursor.lastrowid
     emit("message", f"{username}: {msg}", broadcast=True)
+# Add a new event handler for "delete_message"
+@socketio.on("delete_message")
+def handle_delete_message(message_id):
+    # Execute a DELETE query to remove the message from the database
+    cursor.execute("DELETE FROM messages WHERE id = %s", (message_id,))
+    db.commit()
+
+    # Broadcast a message to all connected clients to update their UI
+    # The clients will use this ID to remove the correct message
+    emit("message_deleted", message_id, broadcast=True)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
