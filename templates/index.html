@@ -131,21 +131,17 @@
         loadHistory(); // reload messages after username is set
       });
       // --- Load saved history from /history ---
-      function loadHistory(){
-        fetch("/history")
-          .then(res => res.json())
-          .then(data => {
-            $("#messages").empty();
-            data.history.reverse().forEach(msg => {
-              const isMe = msg.startsWith(name + ": ");
-              const div = $("<div>").addClass("msg").text(msg);
-              if(isMe) div.addClass("me");
-              $("#messages").append(div);
-            });
-            $("#messages").scrollTop($("#messages")[0].scrollHeight);
-          });
-      }
-
+      function loadHistory() {
+    $.get("/history", function(data) {
+        messages.empty();
+        const history = data.history.reverse();
+        history.forEach(function(msg) {
+            const isSelf = msg.username === name;
+            // FIX: Pass the entire message object which now includes the ID
+            appendMessage(msg, isSelf, msg.id);
+        });
+    });
+    }
       // Load history immediately if username exists
       if (name) loadHistory();
 
