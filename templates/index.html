@@ -130,7 +130,6 @@
         $('#message, #sendBtn').prop('disabled', false);
         loadHistory(); // reload messages after username is set
       });
-
       // --- Load saved history from /history ---
       function loadHistory(){
         fetch("/history")
@@ -180,7 +179,7 @@
       function sendMessage(){
         const msg = $("#message").val().trim();
         if(!msg) return;
-        const abusiveWords = ["mc","bc","gandu","chutiya","madarchod","bhosdike","randi","lund"];
+        const abusiveWords = ["mc","bc","gandu","chutiya","madarchod","bhosdike","randi","lund","fuck","porn","sex","nude","bhadua"];
         let isAbusive = abusiveWords.some(word => msg.toLowerCase().includes(word));
         if(isAbusive){
           $.futureUItoast("No abusive word allowed");
@@ -189,7 +188,41 @@
         socket.send(msg);
         $("#message").val("").focus();
       }
+      // Listen for a double-click event on any message
+$(document).on("dblclick", ".message", function() {
+    // Get the unique ID from the data-id attribute
+    const messageId = $(this).data("id");
 
+    // Check if the message has an ID (history messages don't)
+    if (messageId) {
+        // Confirm with the user before deleting
+        if (confirm("Are you sure you want to delete this message?")) {
+            // Emit a "delete_message" event to the server
+            socket.emit("delete_message", messageId);
+        }
+    } else {
+        alert("Cannot delete a message from history.");
+    }
+});
+
+// Listen for a "message_deleted" event from the server
+socket.on("message_deleted", function(id) {
+    // Find the message by its data-id and remove it from the UI
+    $(`li[data-id="${id}"]`).remove();
+});
+function appendMessage(msg, isSelf, id) {
+    const liClass = isSelf ? "self" : "other";
+    // Use the id parameter to set the data-id attribute
+    const messageHtml = `<li class="message ${liClass}" data-id="${id}"><span class="username">${msg.username}:</span><span class="content">${msg.message}</span></li>`;
+    messages.append(messageHtml);
+    messages.scrollTop(messages.prop("scrollHeight"));
+}
+
+socket.on("message", function(msg) {
+    const isSelf = msg.username === name;
+    // Call appendMessage, passing the ID from the server
+    appendMessage(msg, isSelf, msg.id);
+});
       $(".submit").on("click", sendMessage);
       $("#message").on("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); sendMessage(); } });
 
