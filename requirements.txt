@@ -2,4 +2,4 @@ flask
 flask-socketio
 gunicorn
 eventlet
-mysql-connector-python=11
+mysql-connector-python=8.1.0
