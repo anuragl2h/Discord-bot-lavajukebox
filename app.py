@@ -18,6 +18,7 @@ def get_db_connection():
         password=os.environ.get("DB_PASS", ""),
         database=os.environ.get("DB_NAME", "chatdb"),
         port=int(os.environ.get("DB_PORT", 3306)),
+        ssl={'ssl': { 'ca': None }},  # Simple SSL mode enabled
         autocommit=True
     )
 db = get_db_connection()
