@@ -20,6 +20,8 @@ def get_db_connection():
         port=int(os.environ.get("DB_PORT", 3306)),
         autocommit=True
     )
+db = get_db_connection()
+cursor = db.cursor()
 # Create messages table if not exists
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS messages (
