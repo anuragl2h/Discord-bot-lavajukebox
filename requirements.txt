@@ -1,5 +1,5 @@
 flask
 flask-socketio
-eventlet
 gunicorn
-mysql-connector-python
+eventlet
+mysql-connector-python=11
