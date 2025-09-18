@@ -16,7 +16,7 @@ db = mysql.connector.connect(
     password=os.environ.get("DB_PASS", ""),
     database=os.environ.get("DB_NAME", "chatdb"),
     port=int(os.environ.get("DB_PORT", 3306)),
-    ssl_disabled=False
+    ssl_disabled=False,
     ssl={"ca": ca_cert_path}
 )
 cursor = db.cursor()
