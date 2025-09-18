@@ -1,20 +1,22 @@
 import os
 from flask import Flask, render_template, session, request, jsonify
 from flask_socketio import SocketIO, emit
-import mysql.connector
+import pymysql
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret!"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_users = set()
-# --- Connect to MySQL ---
-db = mysql.connector.connect(
+
+# --- Connect to MySQL using pymysql ---
+db = pymysql.connect(
     host=os.environ.get("DB_HOST", "localhost"),
     user=os.environ.get("DB_USER", "root"),
     password=os.environ.get("DB_PASS", ""),
     database=os.environ.get("DB_NAME", "chatdb"),
-    port=int(os.environ.get("DB_PORT", 3306))
+    port=int(os.environ.get("DB_PORT", 3306)),
+    cursorclass=pymysql.cursors.Cursor  # You can also use DictCursor if you want dict results
 )
 cursor = db.cursor()
 
