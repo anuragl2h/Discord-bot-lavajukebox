@@ -8,7 +8,7 @@ app.config['SECRET_KEY'] = "secret!"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_users = set()
-
+ca_cert_path=os.environ.get("DB_SSL_CERT")
 # --- Connect to MySQL using pymysql ---
 db = pymysql.connect(
     host=os.environ.get("DB_HOST", "localhost"),
@@ -16,7 +16,8 @@ db = pymysql.connect(
     password=os.environ.get("DB_PASS", ""),
     database=os.environ.get("DB_NAME", "chatdb"),
     port=int(os.environ.get("DB_PORT", 3306)),
-    cursorclass=pymysql.cursors.Cursor  # You can also use DictCursor if you want dict results
+    ssl={'ca': ca_cert_path}
+    #You can also use DictCursor if you want dict results
 )
 cursor = db.cursor()
 
