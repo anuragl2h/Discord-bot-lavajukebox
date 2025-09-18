@@ -8,7 +8,7 @@ app.config['SECRET_KEY'] = "secret!"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_users = set()
-ca_cert_path=os.environ.get("DB_SSL_CERT")
+ca_cert_path= "/etc/secrets/ca.pem"
 # --- Connect to MySQL using pymysql ---
 db = pymysql.connect(
     host=os.environ.get("DB_HOST", "localhost"),
