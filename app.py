@@ -8,16 +8,13 @@ app.config['SECRET_KEY'] = "secret!"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_users = set()
-ca_cert_path=os.environ.get("DB_SSL_CERT")
 # --- Connect to MySQL ---
 db = mysql.connector.connect(
     host=os.environ.get("DB_HOST", "localhost"),
     user=os.environ.get("DB_USER", "root"),
     password=os.environ.get("DB_PASS", ""),
     database=os.environ.get("DB_NAME", "chatdb"),
-    port=int(os.environ.get("DB_PORT", 3306)),
-    ssl_required=True ,
-    ssl={"ca": ca_cert_path}
+    port=int(os.environ.get("DB_PORT", 3306))
 )
 cursor = db.cursor()
 
