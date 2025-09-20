@@ -1,35 +1,46 @@
 import os
 from flask import Flask, render_template, session, request, jsonify
 from flask_socketio import SocketIO, emit
-import pymysql
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret!"
 
 socketio = SocketIO(app, cors_allowed_origins="*")
 connected_users = set()
-ca_cert_path= "/etc/secrets/ca.pem"
-# --- Connect to MySQL using pymysql ---
-db = pymysql.connect(
-    host=os.environ.get("DB_HOST", "localhost"),
-    user=os.environ.get("DB_USER", "root"),
-    password=os.environ.get("DB_PASS", ""),
-    database=os.environ.get("DB_NAME", "chatdb"),
-    port=int(os.environ.get("DB_PORT", 3306)),
-    ssl={'ca': ca_cert_path}
-    #You can also use DictCursor if you want dict results
-)
-cursor = db.cursor()
 
-# Create messages table if not exists
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255),
-    message TEXT
+# --- Setup SQLAlchemy engine with pooling ---
+ca_cert_path = "/etc/secrets/ca.pem"
+DATABASE_URL = (
+    f"mysql+pymysql://{os.environ.get('DB_USER', 'root')}:"
+    f"{os.environ.get('DB_PASS', '')}@"
+    f"{os.environ.get('DB_HOST', 'localhost')}:"
+    f"{os.environ.get('DB_PORT', '3306')}/"
+    f"{os.environ.get('DB_NAME', 'chatdb')}"
+    f"?ssl_ca={ca_cert_path}"
 )
-""")
-db.commit()
+
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=10,          # number of connections to keep open
+    max_overflow=20,       # extra connections beyond pool_size
+    pool_timeout=30,       # wait time (seconds) before giving up
+    pool_recycle=1800,     # recycle connections (seconds)
+    echo=False             # set True for SQL logs
+)
+
+SessionLocal = sessionmaker(bind=engine)
+
+# --- Ensure messages table exists ---
+with engine.begin() as conn:
+    conn.execute(text("""
+        CREATE TABLE IF NOT EXISTS messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255),
+            message TEXT
+        )
+    """))
 
 @app.route("/")
 def index():
@@ -38,8 +49,9 @@ def index():
 # --- Return last 50 messages for history ---
 @app.route("/history")
 def history():
-    cursor.execute("SELECT username, message FROM messages ORDER BY id DESC LIMIT 50")
-    rows = cursor.fetchall()
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT username, message FROM messages ORDER BY id DESC LIMIT 50"))
+        rows = result.fetchall()
     return jsonify({"history": [f"{r[0]}: {r[1]}" for r in rows]})
 
 # --- Socket.IO events ---
@@ -64,22 +76,18 @@ def handle_message(msg):
     print(f"{username}: {msg}")
 
     # Save chat message in MySQL
-    cursor.execute(
-        "INSERT INTO messages (username, message) VALUES (%s, %s)",
-        (username, msg)
-    )
-    db.commit()
-    new_message_id = cursor.lastrowid
+    with engine.begin() as conn:
+        conn.execute(
+            text("INSERT INTO messages (username, message) VALUES (:username, :msg)"),
+            {"username": username, "msg": msg}
+        )
     emit("message", f"{username}: {msg}", broadcast=True)
+
 # Add a new event handler for "delete_message"
 @socketio.on("delete_message")
 def handle_delete_message(message_id):
-    # Execute a DELETE query to remove the message from the database
-    cursor.execute("DELETE FROM messages WHERE id = %s", (message_id,))
-    db.commit()
-
-    # Broadcast a message to all connected clients to update their UI
-    # The clients will use this ID to remove the correct message
+    with engine.begin() as conn:
+        conn.execute(text("DELETE FROM messages WHERE id = :id"), {"id": message_id})
     emit("message_deleted", message_id, broadcast=True)
 
 if __name__ == "__main__":
