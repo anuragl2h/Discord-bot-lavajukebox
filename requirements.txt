@@ -4,3 +4,4 @@ gunicorn
 eventlet
 SQLAlchemy
 pymysql
+requests
