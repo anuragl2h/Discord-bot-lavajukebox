@@ -75,7 +75,7 @@ def submit():
             url="https://openrouter.ai/api/v1/chat/completions",
             headers={
                 # Use env variable instead of hardcoding the key
-                "Authorization": f"Bearer {os.environ.get(API}",
+                "Authorization": f"Bearer {os.environ.get(API)}",
                 "Content-Type": "application/json",
             },
             json={   # you can use `json=` instead of `data=json.dumps(...)`
