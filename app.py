@@ -79,7 +79,7 @@ def submit():
                 "Content-Type": "application/json",
             },
             json={   # you can use `json=` instead of `data=json.dumps(...)`
-                "model": "openai/gpt-oss-120b:free",
+                "model": "deepseek/deepseek-r1:free",
                 "messages": [
                     {
                         "role": "user",
