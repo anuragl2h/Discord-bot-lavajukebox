@@ -79,7 +79,7 @@ def submit():
                 "Content-Type": "application/json",
             },
             json={   # you can use `json=` instead of `data=json.dumps(...)`
-                "model": "nvidia/nemotron-nano-9b-v2:free",
+                "model": "openai/gpt-oss-120b:free",
                 "messages": [
                     {
                         "role": "user",
