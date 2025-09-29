@@ -28,6 +28,7 @@
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Baloo+2:wght@400;600&family=Nunito:wght@400;700&family=Chewy&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.metroui.org.ua/dev/icons.css"/>
 <link rel="stylesheet" href="https://cdn.statically.io/gh/olton/metroui/master/lib/metro.css"/>
 <script src="https://cdn.statically.io/gh/olton/metroui/master/lib/metro.js"></script>
@@ -258,31 +259,21 @@
         loadHistory();
       });
 
-      function loadHistory() {
-  fetch("/history")
-    .then(res => res.json())
-    .then(data => {
-      $("#messages").empty();
-      data.history.reverse().forEach(item => {
-        // Access the properties of the object
-        const username = item.username;
-        const message = item.message;
-
-        const fullMessage = `${username}: ${message}`;
-        const isMe = username === name;
-
-        // Use the combined string for the text content
-        const div = $("<div>").addClass("msg").text(fullMessage);
-        
-        if (isMe) {
-          div.addClass("me");
-        }
-        
-        $("#messages").append(div);
-      });
-      $("#messages").scrollTop($("#messages")[0].scrollHeight);
-    });
-}
+      function loadHistory(){
+        fetch("/history")
+          .then(res => res.json())
+          .then(data => {
+            $("#messages").empty();
+            data.history.reverse().forEach(msg => {
+              const isMe = msg.startsWith(name + ": ");
+              const div = $("<div>").addClass("msg").text(msg);
+              div.html = marked.parse(div)
+              if(isMe) div.addClass("me");
+              $("#messages").append(div);
+            });
+            $("#messages").scrollTop($("#messages")[0].scrollHeight);
+          });
+      }
       if (name) loadHistory();
 
       // Online users
