@@ -74,7 +74,7 @@ def submit():
             url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
             headers={
                 "Content-Type": "application/json",
-                "x-goog-api-key": f"{os.environ.get("API")}",  # 🔑 Hardcoded for testing
+                "x-goog-api-key": f"{os.environ.get(API)}",  # 🔑 Hardcoded for testing
             },
             json={
                 "contents": [
