@@ -10,7 +10,7 @@
   <meta name="keywords" content="chat app, real-time messaging, online chat, group chat, instant messaging, secure chat, free chat app, Chat-verse, Chatverse, Render Chat App">
   <meta name="author" content="Render Chat App Team">
   <meta name="robots" content="index, follow">
-
+function
   <!-- Open Graph -->
   <meta property="og:title" content="Render Chat App - Free Real-Time Messaging">
   <meta property="og:description" content="Chat online with friends, create groups, and stay connected with Render Chat App. Fast, secure, and easy-to-use real-time chat experience.">
@@ -258,21 +258,29 @@
         loadHistory();
       });
 
-      function loadHistory(){
-        fetch("/history")
-          .then(res => res.json())
-          .then(data => {
+       // Corrected JavaScript code for index.html
+function loadHistory(){
+    fetch("/history")
+        .then(res => res.json())
+        .then(data => {
             $("#messages").empty();
-            data.history.reverse().forEach(msg => {
-              const isMe = msg.startsWith(name + ": ");
-              const div = $("<div>").addClass("msg").text(msg);
-              div.html = marked.parse(div)
-              if(isMe) div.addClass("me");
-              $("#messages").append(div);
+            data.history.reverse().forEach(item => {
+                // Access the username and message properties
+                const username = item.username;
+                const message = item.message;
+                
+                const fullMessage = `${username}: ${message}`;
+                const isMe = username === name; // Check if the username matches the current user
+                
+                const div = $("<div>").addClass("msg").text(fullMessage);
+                if(isMe) {
+                  div.addClass("me");
+                }
+                $("#messages").append(div);
             });
             $("#messages").scrollTop($("#messages")[0].scrollHeight);
-          });
-      }
+        });
+}
       if (name) loadHistory();
 
       // Online users
