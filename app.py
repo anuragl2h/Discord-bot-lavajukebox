@@ -60,41 +60,35 @@ def history():
     return jsonify({"history": [f"{r[0]}: {r[1]}" for r in rows]})
 @app.route("/submit", methods=["POST"])
 def submit():
-    ai_response = "❌ Something went wrong"  # Default fallback
-    
+    ai_response = "❌ Something went wrong"
+
     try:
         data = request.get_json()
         user_input = data.get("user_text")
 
-        # --- Check empty input ---
         if not user_input:
             return jsonify({"ai_response": "⚠️ No input provided"}), 400
 
-        # --- Send request to OpenRouter API ---
+        # --- Gemini API request ---
         response = requests.post(
-            url="https://openrouter.ai/api/v1/chat/completions",
+            url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent",
             headers={
-                # Use env variable instead of hardcoding the key
-                "Authorization": f"Bearer {os.environ.get("API")}",
                 "Content-Type": "application/json",
+                "x-goog-api-key": f"{os.environ.get("API")}",  # 🔑 Hardcoded for testing
             },
-            json={   # you can use `json=` instead of `data=json.dumps(...)`
-                "model": "google/gemma-3n-e2b-it:free",
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": user_input + " (please give fast and short answer in beautiful markdown)"
-                    }
+            json={
+                "contents": [
+                    {"parts": [{"text": user_input + " (please give fast and short answer)"}]}
                 ]
             },
-            timeout=15  # prevent hanging forever
+            timeout=15
         )
 
         result = response.json()
 
-        # --- Extract AI response safely ---
-        if "choices" in result and len(result["choices"]) > 0:
-            ai_response = result["choices"][0]["message"]["content"]
+        # --- Extract Gemini response safely ---
+        if "candidates" in result and len(result["candidates"]) > 0:
+            ai_response = result["candidates"][0]["content"]["parts"][0]["text"]
         else:
             ai_response = f"⚠️ Error from API: {result}"
 
