@@ -26,19 +26,14 @@
 
   <!-- Scripts & Styles -->
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Baloo+2:wght@400;600&family=Nunito:wght@400;700&family=Chewy&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.metroui.org.ua/dev/icons.css"/>
 <link rel="stylesheet" href="https://cdn.statically.io/gh/olton/metroui/master/lib/metro.css"/>
 <script src="https://cdn.statically.io/gh/olton/metroui/master/lib/metro.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
-
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script>
-
-    <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+       <script src="https://kit.fontawesome.com/549f2c4b6c.js" crossorigin="anonymous"></script>
   <style>
     .fu-modal-close { display: none; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -112,7 +107,7 @@
     .chatbox {
       position: absolute;
       bottom: 1vh; left: 1.5vh; right: 12vh;
-      border: 0.75px solid #2F3560;
+      border: 1px solid #2F3560;
       height: 10vh;
       border-radius: 5vh;
       background: transparent;
@@ -124,9 +119,17 @@
     }
     .chatbox:hover { background: #2F3560; }
     .input1 {
-      width: 100%; font-size: 3vh; border: none !important; outline: none !important;
-      background: transparent !important; color: skyblue;
+      width: 100%; font-size: 3.0vh !important; border: none!important; outline: none!important;
+      background: transparent !important; color: skyblue !important;
     }
+    .input1, 
+.input1:focus, 
+.input1:hover, 
+.input1:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
     .submit {
       position: absolute; bottom: 1vh; right: 1.5vh;
       height: 10vh; width: 10vh; border-radius: 50%;
@@ -134,9 +137,12 @@
       cursor: pointer; background: transparent;
       backdrop-filter: blur(20px);
       transition: background-color 0.3s ease;
-      border: 0.75px solid #2F3560;
+      border: 1px solid #2F3560;
     }
-    .submit1 { font-size: 3.5vh; border: none; background: transparent; color: lightblue; }
+    .submit1 { font-size: 3.0vh; border: none; background: transparent !important; color: lightblue; 
+      transform: rotate(45deg);
+      text-align: center;
+    }
     .submit1:focus { outline: none; }
     .submit:hover { background: rgb(27,131,212) !important; }
     .td { display: grid; place-items: end; position: absolute; top: 2.5vh; right: 2.25vh; width: 4vh; height: 4vh; cursor: pointer; }
@@ -176,10 +182,11 @@
     .chatai {
       position: absolute; border-radius: 3vh;
       z-index: 10; bottom: 20vh; right: 2vh;
-      padding: 2vh; color: white;
+      padding: 3vh; color: white;
+      font-size: 1.75vh;
     }
     .window{
-      z-index: 99999 !important;
+      z-index: 999 !important;
     }
     iframe{
      height: auto;
@@ -215,12 +222,12 @@
       <input type="text" id="message" name="message" placeholder="Send..." class="input1" autocomplete="off">
     </div>
     <div class="submit">
-      <button class="submit1" id="sendBtn" aria-label="Send">➤</button>
+      <button class="submit1" id="sendBtn" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </div>
 
-  <button class="chatai button outline primary">Chat Ai
-  </button>
+  <button class="chatai button info"><a href="/chatai">Chat Ai<i class="fa-solid fa-comment"></i>
+  </a></button>
 
   <script>
     $(function(){
@@ -259,6 +266,7 @@
             data.history.reverse().forEach(msg => {
               const isMe = msg.startsWith(name + ": ");
               const div = $("<div>").addClass("msg").text(msg);
+              div.html = marked.parse(div)
               if(isMe) div.addClass("me");
               $("#messages").append(div);
             });
@@ -346,19 +354,6 @@ $(document).on("click", "#close", function(){
 });
 $(document).on("click", ".moc", () => Metro.dialog.close(Metro.dialog.get(this)));
 
-     $(document).on("click", ".chatai", function () {
-  Metro.window.create({
-    title: "AI Window",
-    content: `<iframe style="width:100%; height:400px; border:none;" src="/chatai"></iframe>`,
-    width: 375,
-    height: 500,
-    resizable: true,
-    scrollable: true,
-    btnClose: true,
-    btnMin: true,
-    btnMax: true
-  });
-});
       // Rules
       $(document).on("click", "#rule", function(){
         Metro.dialog.create({

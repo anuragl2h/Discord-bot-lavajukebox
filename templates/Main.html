@@ -9,13 +9,14 @@
     <link rel="icon" href="favicon.ico">
     <script src="https://kit.fontawesome.com/549f2c4b6c.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+
     <title>Chatbot</title>
     <style>
         /* Modern Chatbot Theme */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: system-ui, sans-serif; 
-            background: #f0f2f5; 
+            background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%); 
             color: black; 
             height: 100vh;
             display: flex;
@@ -24,7 +25,7 @@
             line-height: 1.6;
         }
         section {
-            background-color: #fff;
+            background: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             height: 80vh;
@@ -82,7 +83,7 @@
         input[type="text"]:focus {
             border-color: #0b93f6;
         }
-        button {
+        .btn {
             border: none;
             color: blue;
             background-color: white;
@@ -91,7 +92,7 @@
             transition: background-color 0.2s;
             transform: rotate(45deg);
         }
-        button:hover {
+        .btn:hover {
             background-color: white;
         }
         .str{
@@ -102,9 +103,33 @@
           padding: 1.5vh;
           background-color: skyblue;
         }
+        header{
+          color: darkblue;
+          border-radius: 2vh;
+          
+          padding: 0.5vh 1.5vh;
+          position: absolute;
+          top: 2vh;
+        }
+        .button{
+          background-color:transparent;
+          border-radius: 1vh;
+          padding: 1vh 1.5vh;
+          border: 1px solid blue;
+          position: absolute;
+          top: 2vh;
+          left: 1vh;
+        }
+        a{
+          text-decoration: none;
+          display; inline;
+          color: purple;
+        }
     </style>
 </head>
 <body>
+  <button class="button"><a href="/" ><h4><i class="fa-solid fa-arrow-left"></i></h4><h6>Home</h6></a></button>
+  <header><h1>L2H AI <i class="fa-solid fa-comments"></i></h1></header>
     <section>
         <div class="chat-area" data-markdown="{{ text | safe }}">
           
@@ -113,7 +138,7 @@
         <div class="cont">
             <form id="chat-form" action="/submit" method="post">
                 <input type="text" name="user_text" placeholder="Type your message...">
-                <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+                <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </section>
