@@ -258,21 +258,31 @@
         loadHistory();
       });
 
-      function loadHistory(){
-        fetch("/history")
-          .then(res => res.json())
-          .then(data => {
-            $("#messages").empty();
-            data.history.reverse().forEach(msg => {
-              const isMe = msg.startsWith(name + ": ");
-              const div = $("<div>").addClass("msg").text(msg);
-              div.html = marked.parse(div)
-              if(isMe) div.addClass("me");
-              $("#messages").append(div);
-            });
-            $("#messages").scrollTop($("#messages")[0].scrollHeight);
-          });
-      }
+      function loadHistory() {
+  fetch("/history")
+    .then(res => res.json())
+    .then(data => {
+      $("#messages").empty();
+      data.history.reverse().forEach(item => {
+        // Access the properties of the object
+        const username = item.username;
+        const message = item.message;
+
+        const fullMessage = `${username}: ${message}`;
+        const isMe = username === name;
+
+        // Use the combined string for the text content
+        const div = $("<div>").addClass("msg").text(fullMessage);
+        
+        if (isMe) {
+          div.addClass("me");
+        }
+        
+        $("#messages").append(div);
+      });
+      $("#messages").scrollTop($("#messages")[0].scrollHeight);
+    });
+}
       if (name) loadHistory();
 
       // Online users
