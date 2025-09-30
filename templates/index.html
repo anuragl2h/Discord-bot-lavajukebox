@@ -260,21 +260,24 @@
       });
 
       function loadHistory(){
-        fetch("/history")
-          .then(res => res.json())
-          .then(data => {
-            $("#messages").empty();
-            data.history.reverse().forEach(item => {
-    const parts = item.split(": ");
-    const username = parts[0];
-    const message = parts.slice(1).join(": ");
-    const fullMessage = `${username}: ${message}`;
-    const isMe = username === name;
+  fetch("/history")
+    .then(res => res.json())
+    .then(data => {
+      $("#messages").empty();
+      data.history.reverse().forEach(item => {
+        const parts = item.split(": ");
+        const username = parts[0];
+        const message = parts.slice(1).join(": ");
+        const fullMessage = `${username}: ${message}`;
+        const isMe = username === name;
 
-    const div = $("<div>").addClass("msg").text(fullMessage);
-    if (isMe) div.addClass("me");
-    $("#messages").append(div);
-});
+        const div = $("<div>").addClass("msg").text(fullMessage);
+        if (isMe) div.addClass("me");
+        $("#messages").append(div);
+      });
+      $("#messages").scrollTop($("#messages")[0].scrollHeight);
+    });
+}
       if (name) loadHistory();
 
       // Online users
