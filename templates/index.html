@@ -32,8 +32,6 @@
 <link rel="stylesheet" href="https://cdn.metroui.org.ua/dev/icons.css"/>
 <link rel="stylesheet" href="https://cdn.statically.io/gh/olton/metroui/master/lib/metro.css"/>
 <script src="https://cdn.statically.io/gh/olton/metroui/master/lib/metro.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
        <script src="https://kit.fontawesome.com/549f2c4b6c.js" crossorigin="anonymous"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -306,7 +304,6 @@ h3{
             data.history.reverse().forEach(msg => {
               const isMe = msg.startsWith(name + ": ");
               const div = $("<div>").addClass("msg").text(msg);
-              div.html = marked.parse(div)
               if(isMe) div.addClass("me");
               $("#messages").append(div);
             });
