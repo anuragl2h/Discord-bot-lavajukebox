@@ -78,7 +78,7 @@ def submit():
             },
             json={
                 "contents": [
-                    {"parts": [{"text": user_input + " (please give fast and short answer)"}]}
+                    {"parts": [{"text": user_input + " (please give fast response with emojis)"}]}
                 ]
             },
             timeout=15
